@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Birthday Quest: The Lost Gift</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <header id="top-bar">
+    <div class="brand-badge">
+      <span class="brand-icon">⭐</span>
+      <span class="brand-title">BIRTHDAY QUEST : THE LOST GIFT</span>
+    </div>
+    <div class="hud-top-stats" id="hud-top-stats">
+      <span class="stat-pill"><span class="coin-icon">🪙</span> <span id="coin-counter">0</span></span>
+      <span class="stat-pill"><span class="stage-icon">🗺️</span> <span id="stage-badge-top">DUNIA 1-1</span></span>
+    </div>
+    <div class="top-controls">
+      <button id="btn-header-musicbox" class="pixel-btn-tiny musicbox-header-pill hidden" title="Piringan Hitam 1000X (Klik untuk Stop / Putar)">
+        <span class="header-disc-icon" id="header-disc-icon">💿</span>
+        <span id="header-music-title">1000X: OFF</span>
+      </button>
+      <button id="btn-audio" class="pixel-btn-tiny" title="Musik Chiptune Game">
+        <span id="audio-icon">🔊</span> BGM: ON
+      </button>
+      <button id="btn-fullscreen" class="pixel-btn-tiny" title="Fullscreen">
+        ⛶
+      </button>
+    </div>
+  </header>
+
+  <!-- Arcade Main Shell -->
+  <main id="game-app">
+    <div id="crt-scanlines"></div>
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Audio Element for Ghea Indrawari - 1000X MP3 -->
+    <audio id="audio-1000x-track" preload="auto">
+      <source src="assets/1000x.mp3" type="audio/mp3">
+      <source src="1000x.mp3" type="audio/mp3">
+    </audio>
+
+    <!-- IN-GAME RETRO VICTORY MODAL (Replacing browser alert) -->
+    <div id="victory-modal" class="in-game-modal hidden">
+      <div class="modal-card-retro">
+        <div class="modal-seal">🏆</div>
+        <h3 class="modal-heading" id="modal-victory-title">VICTORY!</h3>
+        <p class="modal-desc" id="modal-victory-desc">Anda berhasil mengalahkan musuh!</p>
+        <button id="btn-modal-continue" class="rpg-btn-primary pulse-btn">
+          LANJUT JELAJAHI DUNIA BERIKUTNYA ▶
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= 1. INTRO & TITLE SCREEN ================= -->
+    <section id="scene-title" class="scene active">
+      <div class="sky-paralax">
+        <div class="pixel-stars"></div>
+        <div class="pixel-clouds"></div>
+        <div class="pixel-hills"></div>
+      </div>
+      <div class="title-container">
+        <div class="pixel-ribbon">✦ PETUALANGAN MISTERIUS ✦</div>
+        <h1 class="main-game-title">PETUALANGAN HADIAH HILANG</h1>
+        <p class="tagline">Bantu Sahabat Merebut Kembali Hadiah Rahasia yang Dicuri Monster Bayangan!</p>
+
+        <!-- Preview Anime Busts with BIG GLORIOUS GOLDEN CHEST IN MIDDLE -->
+        <div class="anime-preview-card">
+          <div class="avatar-col">
+            <div class="portrait-avatar hero-portrait-small"></div>
+            <span class="avatar-caption">Kamu (Hero Cewek)</span>
+          </div>
+
+          <!-- Big Golden Gift Box in Center -->
+          <div class="center-gift-col">
+            <div class="big-preview-gift float-anim">
+              <div class="pixel-sprite-chest big-chest-preview"></div>
+            </div>
+            <span class="gift-caption">Hadiah Rahasia Emas ✨</span>
+          </div>
+
+          <div class="avatar-col">
+            <div class="portrait-avatar friend-portrait-small"></div>
+            <span class="avatar-caption">Sahabat (Cowok)</span>
+          </div>
+        </div>
+
+        <!-- HIGH CONTRAST ULTRA-READABLE BUTTON -->
+        <button id="btn-play-game" class="rpg-btn-primary pulse-btn">
+          ▶ MULAI PETUALANGAN
+        </button>
+
+        <div class="controls-guide">
+          <span>🎮 Keyboard: [A/D] atau [Panah] Jalan • [W/Spasi] Lompat</span>
+          <span>📱 Ponsel: Gunakan tombol virtual di layar</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 2. PROLOGUE SCENE: 2 PIXEL ACTORS ON STAGE FIRST ================= -->
+    <section id="scene-prologue" class="scene">
+      <div class="village-pixel-backdrop">
+        <div class="pixel-sun"></div>
+        <div class="pixel-trees-layer"></div>
+        <div class="pixel-ground-layer"></div>
+      </div>
+
+      <!-- Actors on village stage (Pixel Sprites) -->
+      <div class="stage-actors-area">
+        <div id="prologue-friend" class="stage-actor friend-pos">
+          <div class="pixel-sprite-boy"></div>
+          <span class="pixel-nameplate">Sahabat</span>
+        </div>
+        <div id="prologue-chest" class="stage-actor chest-pos">
+          <div class="pixel-sprite-chest float-anim"></div>
+        </div>
+        <div id="prologue-hero" class="stage-actor hero-pos">
+          <div class="pixel-sprite-girl"></div>
+          <span class="pixel-nameplate">Kamu</span>
+        </div>
+        <div id="prologue-thief" class="stage-actor thief-pos hidden">
+          <div class="pixel-sprite-thief"></div>
+          <span class="pixel-nameplate evil">Pencuri</span>
+        </div>
+      </div>
+
+      <!-- Dialogue Theater with 2D Half-body Transparent Portraits -->
+      <div class="dialogue-theater">
+        <div class="half-body-stage">
+          <div id="dialogue-bust-left" class="bust-transparent left-bust hidden"></div>
+          <div id="dialogue-bust-right" class="bust-transparent right-bust hidden"></div>
+        </div>
+
+        <!-- Dialogue Box -->
+        <div class="vn-dialogue-box">
+          <div class="speaker-nameplate" id="vn-speaker-name">Sahabat (Cowok)</div>
+          <p class="vn-text" id="vn-dialogue-text">Memuat cerita...</p>
+          <div class="vn-footer">
+            <button id="btn-vn-next" class="pixel-btn-action">
+              LANJUT ▶
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 3. MARIO-STYLE 2D PLATFORMER WORLD ================= -->
+    <section id="scene-platformer" class="scene">
+      <div class="platformer-viewport">
+        <canvas id="platformer-canvas" width="800" height="450"></canvas>
+
+        <!-- Stage Level Announcement Overlay -->
+        <div id="level-banner" class="level-banner">
+          <h2 id="level-title">DUNIA 1-1: LEMBAH RUMPUT HIJAU</h2>
+          <p id="level-sub">Cari pencuri kado di ujung jalan!</p>
+        </div>
+
+        <!-- Attack Skill Overlay Animation -->
+                <!-- In-World Platformer Boss Battle HUD (Stage 4 Only) -->
+        <div id="platformer-boss-hud" class="platformer-boss-hud hidden">
+          <div class="pb-hud-header">
+            <div class="pb-boss-title">
+              <span class="pb-skull">💀</span>
+              <span class="pb-name">SHADOW LORD (BOSS PENCURI)</span>
+            </div>
+            <div class="pb-hp-row">
+              <span class="pb-hp-label">BOSS HP:</span>
+              <span class="pb-hearts" id="pb-hearts">❤️❤️❤️</span>
+            </div>
+          </div>
+          <div class="pb-skill-banner" id="pb-skill-banner">
+            <span class="pb-skill-icon">⚡</span>
+            <span class="pb-skill-text" id="pb-skill-text">SKILL: METEOR BAYANGAN!</span>
+          </div>
+        </div>
+
+        <!-- In-World Reflection Question Modal during Boss Stun Attack -->
+        <div id="platformer-boss-modal" class="in-game-modal hidden">
+          <div class="modal-card-retro boss-attack-card">
+            <div class="modal-top-bar">
+              <span class="modal-badge-pixel" id="pbm-round-badge">⚔️ TEBASAN CAHAYA REFLEKSI (RONDE 1 / 3)</span>
+              <span class="modal-hp-pixel" id="pbm-boss-hp">BOSS HP: ❤️ ❤️ ❤️</span>
+            </div>
+            <h3 class="pbm-question-text" id="pbm-question-text">
+              Pertanyaan refleksi akan muncul di sini...
+            </h3>
+            <div class="pbm-options-grid" id="pbm-options-grid">
+              <!-- 4 Pilihan Jawaban -->
+            </div>
+          </div>
+        </div>
+
+        <div id="skill-vfx-container" class="skill-vfx-container hidden">
+          <svg class="vfx-anime-svg" viewBox="0 0 800 450" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="gradBladeGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+                <stop offset="25%" stop-color="#ffd359" stop-opacity="1"/>
+                <stop offset="50%" stop-color="#ffffff" stop-opacity="1"/>
+                <stop offset="75%" stop-color="#f39c12" stop-opacity="1"/>
+                <stop offset="100%" stop-color="#e67e22" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="gradBladeCyan" x1="100%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+                <stop offset="25%" stop-color="#00ffff" stop-opacity="1"/>
+                <stop offset="50%" stop-color="#ffffff" stop-opacity="1"/>
+                <stop offset="75%" stop-color="#3498db" stop-opacity="1"/>
+                <stop offset="100%" stop-color="#9b59b6" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <!-- Expanding Shockwave Rings -->
+            <circle class="vfx-ring vfx-ring-1" cx="400" cy="210" r="20" />
+            <circle class="vfx-ring vfx-ring-2" cx="400" cy="210" r="10" />
+            <!-- Curved Tapered Anime Katana / Light Slashes -->
+            <path class="vfx-crescent-slash slash-arc-1" d="M 140,340 Q 400,190 670,70 Q 410,225 140,340 Z" fill="url(#gradBladeGold)" />
+            <path class="vfx-crescent-slash slash-arc-2" d="M 660,340 Q 400,190 130,70 Q 390,225 660,340 Z" fill="url(#gradBladeCyan)" />
+            <path class="vfx-crescent-slash slash-arc-3" d="M 90,215 Q 400,185 710,205 Q 400,225 90,215 Z" fill="url(#gradBladeGold)" />
+            <!-- 4-Point Anime Starburst Sparks -->
+            <g class="vfx-sparks-group">
+              <polygon class="vfx-star star-1" points="400,170 406,194 430,200 406,206 400,230 394,206 370,200 394,194" />
+              <polygon class="vfx-star star-2" points="280,120 284,136 300,140 284,144 280,160 276,144 260,140 276,136" />
+              <polygon class="vfx-star star-3" points="530,130 534,146 550,150 534,154 530,170 526,154 510,150 526,146" />
+              <polygon class="vfx-star star-4" points="250,270 254,286 270,290 254,294 250,310 246,294 230,290 246,286" />
+              <polygon class="vfx-star star-5" points="550,260 554,276 570,280 554,284 550,300 546,284 530,280 546,276" />
+            </g>
+          </svg>
+          <div class="skill-name-banner" id="skill-name-banner">✨ TEBASAN CAHAYA REFLEKSI!</div>
+        </div>
+      </div>
+      </div>
+
+      <!-- Mobile Touch On-Screen Controls -->
+      <div id="touch-controls" class="touch-controls">
+        <div class="dpad-left">
+          <button id="btn-touch-left" class="touch-btn">◀</button>
+          <button id="btn-touch-right" class="touch-btn">▶</button>
+        </div>
+        <div class="dpad-right">
+          <button id="btn-touch-attack" class="touch-btn attack-btn hidden">⚔️ SERANG</button>
+          <button id="btn-touch-jump" class="touch-btn jump-btn">JUMP ▲</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 4. ENCOUNTER / ENEMY REFLECTION BATTLE ================= -->
+        <section id="scene-encounter" class="scene">
+      <!-- Standard Encounter Overlay for Stages 1, 2, 3 (Regular Monsters) -->
+      <div class="encounter-overlay" id="standard-encounter-overlay">
+        <div class="encounter-actors">
+          <div class="encounter-hero-portrait">
+            <div class="half-body-portrait hero-combat-bust"></div>
+            <div class="portrait-name">KAMU (HERO)</div>
+          </div>
+
+          <div class="vs-badge">VS</div>
+
+          <div class="encounter-enemy-portrait">
+            <div id="encounter-enemy-bust" class="half-body-portrait enemy-combat-bust"></div>
+            <div class="portrait-name" id="encounter-enemy-name">PENJAGA BAYANGAN</div>
+          </div>
+        </div>
+
+        <div class="enemy-taunt-box" id="enemy-taunt-text">
+          "Pedangmu tak akan melukaiku! Buktikan ketulusan hatimu dengan menjawab pertanyaan ini!"
+        </div>
+
+        <div class="encounter-question-box" id="encounter-question-box">
+          <div class="eq-header">
+            <span class="eq-badge" id="eq-progress-badge">REFLEKSI DIRI</span>
+            <span class="eq-stage" id="eq-stage-name">Tahap 1</span>
+          </div>
+          <h3 class="eq-prompt" id="eq-question-text">
+            Pertanyaan refleksi akan muncul di sini...
+          </h3>
+
+          <div class="eq-options-grid" id="eq-options-grid">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- DEDICATED INTERACTIVE BOSS BATTLE OVERLAY (STAGE 4: SHADOW LORD) -->
+      <div class="boss-battle-overlay hidden" id="boss-battle-overlay">
+        <!-- Boss HP Bar & Status Header -->
+        <div class="boss-hp-header">
+          <div class="boss-title-row">
+            <span class="boss-skull-icon">💀</span>
+            <span class="boss-name-tag">SHADOW LORD (PENCURI HADIAH)</span>
+          </div>
+          <div class="boss-hp-bar-container">
+            <span class="boss-hp-label">BOSS HP:</span>
+            <div class="boss-hp-hearts" id="boss-hp-hearts">
+              <span class="boss-heart full" id="bheart-1">❤️</span>
+              <span class="boss-heart full" id="bheart-2">❤️</span>
+              <span class="boss-heart full" id="bheart-3">❤️</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Combat Arena Stage -->
+        <div class="boss-arena-stage" id="boss-arena-stage">
+          <!-- Skill Banner Announcement -->
+          <div class="boss-skill-banner" id="boss-skill-banner">
+            <span class="skill-banner-icon" id="skill-banner-icon">⚡</span>
+            <span class="skill-banner-text" id="skill-banner-text">BOSS SEDANG MEMPERSIAPKAN SKILL!</span>
+          </div>
+
+          <!-- Arena Combat Characters -->
+          <div class="boss-arena-fighters">
+            <!-- Player Hero in Arena -->
+            <div class="arena-player-container lane-center" id="arena-player">
+              <div class="arena-player-sprite pixel-sprite-girl"></div>
+              <div class="arena-player-shadow"></div>
+              <div class="player-dodge-badge hidden" id="player-dodge-badge">💨 HINDAR!</div>
+            </div>
+
+            <!-- Boss Monster in Arena -->
+            <div class="arena-boss-container" id="arena-boss">
+              <div class="arena-boss-sprite enemy-boss-bust"></div>
+              <div class="boss-exhausted-stars hidden" id="boss-dizzy-stars">💫 💫 💫</div>
+              <div class="arena-boss-shadow"></div>
+            </div>
+          </div>
+
+          <!-- Dodging Lanes & Attack Projectiles Area -->
+          <div class="arena-dodge-lanes" id="arena-dodge-lanes">
+            <div class="dodge-lane lane-left" id="lane-col-0">
+              <div class="lane-warning hidden" id="lane-warn-0">⚠️ AWAS!</div>
+              <div class="projectile-hazard hidden" id="proj-0">☄️</div>
+            </div>
+            <div class="dodge-lane lane-center" id="lane-col-1">
+              <div class="lane-warning hidden" id="lane-warn-1">⚠️ AWAS!</div>
+              <div class="projectile-hazard hidden" id="proj-1">☄️</div>
+            </div>
+            <div class="dodge-lane lane-right" id="lane-col-2">
+              <div class="lane-warning hidden" id="lane-warn-2">⚠️ AWAS!</div>
+              <div class="projectile-hazard hidden" id="proj-2">☄️</div>
+            </div>
+          </div>
+
+          <!-- Wave Counter & Dodge Status -->
+          <div class="boss-dodge-tracker" id="boss-dodge-tracker">
+            <span class="tracker-label">HINDARI SERANGAN:</span>
+            <span class="tracker-count" id="dodge-count-display">GELOMBANG 1 / 3</span>
+          </div>
+        </div>
+
+        <!-- Controls for Dodging (On-screen for Mobile + Keyboard Support) -->
+        <div class="boss-dodge-controls" id="boss-dodge-controls">
+          <button id="btn-dodge-left" class="rpg-btn-dodge">◀ KIRI (A)</button>
+          <button id="btn-dodge-jump" class="rpg-btn-dodge btn-jump">⬆ LOMPAT (W)</button>
+          <button id="btn-dodge-right" class="rpg-btn-dodge">KANAN ▶ (D)</button>
+        </div>
+
+        <!-- Boss Exhausted Cooldown & Attack Trigger Bar -->
+        <div class="boss-exhausted-panel hidden" id="boss-exhausted-panel">
+          <div class="exhausted-alert">
+            <span class="exhausted-icon">⚠️</span>
+            <div class="exhausted-text">
+              <span class="exhausted-title">BOSS KELELAHAN & COOLDOWN!</span>
+              <span class="exhausted-sub">Boss kehabisan tenaga mengeluarkan jurus. Kesempatan menyerang!</span>
+            </div>
+          </div>
+          <button id="btn-attack-boss" class="rpg-btn-primary pulse-btn btn-boss-attack">
+            ⚔️ SERANG BOSS SEKARANG! (ATTACK)
+          </button>
+        </div>
+
+        <!-- Boss Attack Question Panel (Directly inside Boss Battle Overlay) -->
+        <div class="boss-attack-panel hidden" id="boss-attack-panel">
+          <div class="bap-header">
+            <span class="bap-badge" id="bap-round-badge">⚔️ TEBASAN REFLEKSI CAHAYA (RONDE 1 / 3)</span>
+            <span class="bap-target">SASARAN: SHADOW LORD</span>
+          </div>
+          <h3 class="bap-prompt" id="bap-prompt-text">
+            Pertanyaan refleksi serangan akan muncul di sini...
+          </h3>
+          <div class="bap-options-grid" id="bap-options-grid">
+            <!-- 4 pilihan jawaban tombol retro -->
+          </div>
+        </div>
+
+        <!-- Boss Reaction Speech Bubble -->
+        <div class="boss-speech-bubble hidden" id="boss-speech-bubble">
+          <span class="boss-bubble-speaker">SHADOW LORD:</span>
+          <span class="boss-bubble-dialogue" id="boss-bubble-dialogue">"..."</span>
+        </div>
+
+        <!-- Boss Defeat Cutscene Container -->
+        <div class="boss-defeat-modal hidden" id="boss-defeat-modal">
+          <div class="defeat-card">
+            <div class="defeat-badge">👑 BOSS DIKALAHKAN! 👑</div>
+            <h3 class="defeat-title">HADIAH EMAS BERHASIL DIREBUT KEMBALI!</h3>
+            
+            <div class="defeat-dialogue-box" id="defeat-dialogue-box">
+              <div class="defeat-dialogue-line" id="defeat-dialogue-line">
+                "..."
+              </div>
+            </div>
+
+            <div class="defeat-chest-reward">
+              <div class="pixel-chest-sprite big-chest-preview bounce-anim"></div>
+              <span class="reward-sparkle">✨ Hadiah Emas Rahasia ✨</span>
+            </div>
+
+            <button id="btn-claim-chest" class="rpg-btn-primary pulse-btn">
+              🎁 BUKA KADO EMAS SEKARANG ▶
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 5. GIFT REVEAL & OPENING ANIMATION (WITH GHEA 1000X SONG) ================= -->
+    <section id="scene-gift-reveal" class="scene">
+      <div class="reveal-stage-bg">
+        <div class="radiant-sunburst" id="radiant-rays"></div>
+      </div>
+
+      <div class="gift-animation-box">
+        <!-- Chest with Opening Animations -->
+        <div id="interactive-chest-box" class="interactive-chest-wrapper">
+          <div class="chest-ribbon-bow" id="chest-ribbon">🎀</div>
+          <div class="pixel-chest-sprite" id="chest-sprite"></div>
+          <button id="btn-open-chest-now" class="rpg-btn-primary pulse-btn">
+            🎁 KLIK UNTUK MEMBUKA KADO!
+          </button>
+        </div>
+
+        <!-- Emerged Birthday Cake (After Open Animation) -->
+        <div id="emerged-cake-box" class="emerged-cake-wrapper hidden">
+          <!-- Celebratory Cake Emerged Banner -->
+          <div class="cake-reveal-banner" id="cake-reveal-banner">
+            <span class="cake-banner-icon">🎂</span>
+            <div class="cake-banner-info">
+              <span class="cake-banner-title">✨ KADO BERHASIL DIBUKA! ✨</span>
+              <span class="cake-banner-subtitle">Peti emas terbuka & kue ulang tahun megah telah menunggumu!</span>
+            </div>
+          </div>
+
+          <div class="cake-sparkle-halo"></div>
+          <div class="giant-pixel-cake" id="giant-pixel-cake-box">
+            <!-- Master Pixel Birthday Cake with anchored candles & flames -->
+          </div>
+          <div class="surprise-shout">🎉 SURPRISEEEE!! 🎉</div>
+          <p class="surprise-message">
+            Kado ini dari awal memang disiapkan untuk hari ulang tahunmu, sahabatku tercinta!
+          </p>
+          <button id="btn-goto-menu-hub" class="rpg-btn-primary">
+            MENU SPESIAL ULANG TAHUN ▶
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 6. THE 3-CARD MENU HUB (CAN BE BACKED ANYTIME) ================= -->
+    <section id="scene-menu-hub" class="scene">
+      <div class="hub-header">
+        <div class="hub-badge">🎂 HAPPY BIRTHDAY CELEBRATION</div>
+        <h2 class="hub-title">PILIH HADIAH & KENANGAN</h2>
+        <p class="hub-sub">Pilih salah satu menu di bawah. Kamu selalu bisa kembali ke menu ini kapan saja!</p>
+      </div>
+
+      <!-- VINTAGE RETRO MUSIC BOX (PIRINGAN HITAM JADUL - 1000X GHEA INDRAWARI) -->
+      <div class="retro-musicbox-widget" id="retro-musicbox-widget">
+        <div class="musicbox-outer-border">
+          <div class="musicbox-header-bar">
+            <div class="musicbox-brass-tag">
+              <span class="brass-screw">✦</span>
+              <span class="brass-title">RETRO MUSIC BOX • PIRINGAN HITAM</span>
+              <span class="brass-screw">✦</span>
+            </div>
+            <div class="musicbox-status-indicator" id="musicbox-status-pill">
+              <span class="status-indicator-dot" id="musicbox-status-dot"></span>
+              <span class="status-indicator-text" id="musicbox-status-text">BERHENTI</span>
+            </div>
+          </div>
+
+          <div class="musicbox-inner-cabinet">
+            <!-- Left: Turntable with Vinyl Record and Tonearm -->
+            <div class="turntable-compartment" id="turntable-interactive-area" title="Klik piringan untuk Stop / Putar musik">
+              <div class="turntable-platter-bed">
+                <!-- Spinning Vinyl Record -->
+                <div class="vinyl-record-disc" id="vinyl-disc">
+                  <div class="vinyl-groove groove-outer"></div>
+                  <div class="vinyl-groove groove-mid"></div>
+                  <div class="vinyl-groove groove-inner"></div>
+                  <div class="vinyl-center-label">
+                    <span class="label-song">1000X</span>
+                    <span class="label-sub">GHEA</span>
+                    <div class="spindle-hole"></div>
+                  </div>
+                </div>
+
+                <!-- Tonearm / Needle Stylus -->
+                <div class="tonearm-mech" id="tonearm-mech">
+                  <div class="tonearm-pivot"></div>
+                  <div class="tonearm-arm"></div>
+                  <div class="tonearm-cartridge"></div>
+                </div>
+              </div>
+              <div class="turntable-hint">Klik Piringan untuk Stop / Putar</div>
+            </div>
+
+            <!-- Right: Track Info, Equalizer, Timeline, and Big Retro Buttons -->
+            <div class="musicbox-controls-panel">
+              <div class="track-title-banner">
+                <span class="track-music-icon">📻</span>
+                <div class="track-text-group">
+                  <h4 class="track-name">1000X — Ghea Indrawari</h4>
+                  <p class="track-subtitle">Lagu Kejutan Spesial Ulang Tahun Sahabat ✨</p>
+                </div>
+              </div>
+
+              <!-- Animated Retro Pixel Equalizer -->
+              <div class="pixel-equalizer-display" id="pixel-equalizer">
+                <span class="eq-col col-1"></span>
+                <span class="eq-col col-2"></span>
+                <span class="eq-col col-3"></span>
+                <span class="eq-col col-4"></span>
+                <span class="eq-col col-5"></span>
+                <span class="eq-col col-6"></span>
+                <span class="eq-col col-7"></span>
+                <span class="eq-col col-8"></span>
+                <span class="eq-col col-9"></span>
+              </div>
+
+              <!-- Timeline & Progress Bar -->
+              <div class="musicbox-timeline-container">
+                <span class="time-readout" id="musicbox-time-current">00:00</span>
+                <div class="timeline-bar-track" id="musicbox-progress-track" title="Klik untuk geser durasi lagu">
+                  <div class="timeline-bar-fill" id="musicbox-progress-fill"></div>
+                </div>
+                <span class="time-readout" id="musicbox-time-duration">--:--</span>
+              </div>
+
+              <!-- Retro Control Buttons -->
+              <div class="musicbox-button-cluster">
+                <button id="btn-musicbox-toggle" class="rpg-btn-musicbox btn-play-state">
+                  <span id="musicbox-btn-icon">▶</span>
+                  <span id="musicbox-btn-label">PUTAR LAGU</span>
+                </button>
+                <button id="btn-musicbox-replay" class="rpg-btn-musicbox btn-replay-state" title="Ulang lagu dari awal">
+                  <span>⏮</span>
+                  <span>ULANG DARI AWAL</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hub-cards-grid">
+        <!-- Card 1: Tiup Lilin -->
+        <div class="hub-card" id="card-option-candle">
+          <div class="card-icon-badge">🎂</div>
+          <h3 class="card-title">TIUP LILIN</h3>
+          <p class="card-desc">Pejamkan mata, panjatkan harapan terindahmu, dan tiup lilin kuemu secara interaktif!</p>
+          <button class="card-action-btn">BUKA ▶</button>
+        </div>
+
+        <!-- Card 2: Surat Ucapan -->
+        <div class="hub-card" id="card-option-letter">
+          <div class="card-icon-badge">💌</div>
+          <h3 class="card-title">SURAT UCAPAN</h3>
+          <p class="card-desc">Buka gulungan surat doa dan pesan hangat dari sahabat terbaikmu.</p>
+          <button class="card-action-btn">BACA SURAT ▶</button>
+        </div>
+
+        <!-- Card 3: Photobooth Studio -->
+        <div class="hub-card highlight-card" id="card-option-photo">
+          <div class="card-icon-badge">📸</div>
+          <h3 class="card-title">PHOTOBOOTH STUDIO</h3>
+          <p class="card-desc">Foto bareng karakter dengan 3 pilihan template frame retro/anime & simpan fotonya!</p>
+          <button class="card-action-btn">FOTO SEKARANG ▶</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 7. SUB-PAGE 1: SPECTACULAR MULTI-CANDLE BLOWING ================= -->
+    <section id="scene-sub-candle" class="scene sub-modal-scene">
+      <div class="sub-scene-card">
+        <div class="modal-top-bar">
+          <button class="btn-back-to-hub">◀ KEMBALI KE MENU</button>
+          <span class="modal-category">Pojok Tiup Lilin & Harapan</span>
+        </div>
+
+        <div class="candle-stage-center">
+          <!-- Multi-Candle Cake Assembly (Anchored, No Floating!) -->
+          <div class="birthday-cake-assembly" id="cake-interactive-area">
+            <!-- Wind Gust Effect Overlay -->
+            <div id="wind-gust-overlay" class="wind-gust-overlay hidden">
+              <div class="wind-stream stream-1"></div>
+              <div class="wind-stream stream-2"></div>
+              <div class="wind-stream stream-3"></div>
+            </div>
+
+            <!-- 3 Candles Anchored on Top of Cake -->
+            <div class="candles-container">
+              <div class="candle candle-1">
+                <div class="candle-smoke smoke-1 hidden"></div>
+                <div class="candle-flame flame-1"></div>
+                <div class="candle-wick"></div>
+                <div class="candle-body"></div>
+              </div>
+              <div class="candle candle-2">
+                <div class="candle-smoke smoke-2 hidden"></div>
+                <div class="candle-flame flame-2"></div>
+                <div class="candle-wick"></div>
+                <div class="candle-body"></div>
+              </div>
+              <div class="candle candle-3">
+                <div class="candle-smoke smoke-3 hidden"></div>
+                <div class="candle-flame flame-3"></div>
+                <div class="candle-wick"></div>
+                <div class="candle-body"></div>
+              </div>
+            </div>
+
+            <!-- Cake Top Tier -->
+            <div class="cake-tier cake-tier-top">
+              <div class="strawberries-row">
+                <span class="berry">🍓</span>
+                <span class="berry">🍓</span>
+                <span class="berry">🍓</span>
+              </div>
+            </div>
+
+            <!-- Cake Bottom Tier -->
+            <div class="cake-tier cake-tier-bottom">
+              <div class="cake-banner-text">HAPPY BIRTHDAY!</div>
+            </div>
+            
+            <!-- Cake Plate -->
+            <div class="cake-plate"></div>
+          </div>
+
+          <h3 id="candle-status-heading">Pejamkan matamu, buat harapan terindah...</h3>
+          <p id="candle-status-sub">Lalu klik tombol di bawah untuk meniup lilinnya!</p>
+
+          <button id="btn-blow-sub-candle" class="rpg-btn-primary pulse-btn">
+            💨 TIUP LILIN SEKARANG!
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 8. SUB-PAGE 2: SURAT UCAPAN HANGAT ================= -->
+    <section id="scene-sub-letter" class="scene sub-modal-scene">
+      <div class="sub-scene-card scroll-wrapper">
+        <div class="modal-top-bar">
+          <button class="btn-back-to-hub">◀ KEMBALI KE MENU</button>
+          <span class="modal-category">Surat Dari Sahabat</span>
+        </div>
+
+        <div class="parchment-letter-body">
+          <div class="anime-letter-header">
+            <div class="friend-letter-bust"></div>
+            <div class="letter-stamp">❤️ FOR BEST FRIEND</div>
+          </div>
+
+          <h2 class="letter-headline">Selamat Ulang Tahun, Sahabat Hebatku!</h2>
+          <div class="letter-sparkle-line">✧ ✦ ✧ ✦ ✧</div>
+
+          <div class="letter-paragraphs">
+            <p><strong>Hai kamu yang paling berharga,</strong></p>
+            <p>
+              Selamat bertambah usia ya! Hari ini adalah hari perayaan untuk sosok yang luar biasa, tangguh, dan selalu punya cara untuk membuat suasana jadi lebih hangat.
+            </p>
+            <p>
+              Melihat perjalananmu sejauh ini, aku benar-benar bangga pada semua hal yang telah berhasil kamu lewati. Terima kasih sudah selalu menjadi sahabat yang baik, tulus, dan selalu ada untuk saling menyemangati.
+            </p>
+            <div class="quote-box">
+              "Semoga di usiamu yang baru ini, setiap impian dan harapan baikmu dimudahkan jalannya, kesehatan dan kebahagiaan selalu menyertaimu, serta harimu senantiasa dipenuhi keberkahan dan senyuman."
+            </div>
+            <p>
+              Jangan pernah ragu pada potensimu, karena kamu jauh lebih kuat dan hebat dari yang kamu bayangkan. Selamat menikmati hari istimewamu!
+            </p>
+            <p class="letter-sign">
+              Salam hangat & doa terbaik selalu,<br>
+              <strong>Sahabatmu ✨</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 9. SUB-PAGE 3: PHOTOBOOTH STUDIO (3 TEMPLATE) ================= -->
+    <section id="scene-sub-photo" class="scene sub-modal-scene">
+      <div class="sub-scene-card photobooth-wrapper">
+        <div class="modal-top-bar">
+          <button class="btn-back-to-hub">◀ KEMBALI KE MENU</button>
+          <span class="modal-category">📸 Retro & Anime Photobooth</span>
+        </div>
+
+        <div class="booth-split-layout">
+          <!-- Camera Feed & Active Template Frame -->
+          <div class="booth-camera-side">
+            <div class="photobooth-frame-stage" id="photobooth-frame-stage">
+              <!-- Live Video Feed -->
+              <video id="booth-video" autoplay playsinline muted></video>
+
+              <!-- Live Decorative Template Overlay Layer -->
+              <div id="template-overlay-layer" class="template-overlay-layer template-1-active">
+                <div class="tpl-header-text" id="tpl-live-header">HAPPY BIRTHDAY!</div>
+                <div class="tpl-left-char" id="tpl-live-left-char"></div>
+                <div class="tpl-right-char" id="tpl-live-right-char"></div>
+                <div class="tpl-center-prop" id="tpl-live-center-prop"></div>
+                <div class="tpl-footer-text" id="tpl-live-footer">BEST FRIEND FOREVER</div>
+              </div>
+
+              <!-- Camera Flash Effect -->
+              <div id="booth-flash" class="booth-flash"></div>
+
+              <!-- Countdown 3..2..1 -->
+              <div id="booth-countdown" class="booth-countdown hidden">3</div>
+            </div>
+
+            <!-- Snap Button -->
+            <button id="btn-snap-booth" class="rpg-btn-primary snap-main-btn">
+              📸 AMBIL FOTO (HITUNG MUNDUR 3 DETIK)
+            </button>
+          </div>
+
+          <!-- Template Selection & Photo Strip Result -->
+          <div class="booth-settings-side">
+            <div class="setting-group">
+              <label class="setting-label">1. PILIH TEMPLATE PHOTOBOOTH:</label>
+              <div class="template-picker-grid">
+                <!-- Template 1: Ulang Tahun + Pixel Karakter -->
+                <div class="template-choice active" data-tpl="1">
+                  <span class="tpl-badge">T-1</span>
+                  <strong>Birthday Pixel Party</strong>
+                  <small>Frame Polaroid Ulang Tahun + Sprite Pixel Cewek Berhijab & Cowok</small>
+                </div>
+
+                <!-- Template 2: Nama Game + 2D Anime Karakter (Real Faces!) -->
+                <div class="template-choice" data-tpl="2">
+                  <span class="tpl-badge">T-2</span>
+                  <strong>Anime RPG Quest Title (Wajah 2D Asli)</strong>
+                  <small>Logo Judul Game + Foto Wajah 2D Asli Karakter Kamu & Aku</small>
+                </div>
+
+                <!-- Template 3: Aesthetic Twilight / Vintage Photo Strip -->
+                <div class="template-choice" data-tpl="3">
+                  <span class="tpl-badge">T-3</span>
+                  <strong>Twilight Memories Strip</strong>
+                  <small>Desain Photostrip Estetik + Cap Tanggal Emas & Balon Pesta</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="setting-group">
+              <label class="setting-label">2. FILTER KAMERA:</label>
+              <div class="filter-pills">
+                <button class="pill-btn active" data-filter="normal">Normal</button>
+                <button class="pill-btn" data-filter="pixel">8-Bit CRT</button>
+                <button class="pill-btn" data-filter="warm">Warm Vintage</button>
+                <button class="pill-btn" data-filter="cyber">Pastel Dream</button>
+                <button id="btn-toggle-cam-flip" class="pill-btn">🔄 Balik Kamera</button>
+              </div>
+            </div>
+
+            <!-- Result Canvas & Download -->
+            <div id="booth-result-box" class="booth-result-box hidden">
+              <h4 class="result-title">✨ HASIL FOTO PHOTOBOOTH ✨</h4>
+              <canvas id="booth-final-canvas" width="600" height="750"></canvas>
+              <div class="result-btn-row">
+                <a id="btn-download-booth-png" class="rpg-btn-primary download-link" download="Photobooth_Birthday_Quest.png">
+                  💾 SIMPAN FOTO (PNG)
+                </a>
+                <button id="btn-retake-booth" class="pixel-btn-action">
+                  🔄 FOTO LAGI
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
