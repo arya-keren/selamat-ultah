@@ -2669,7 +2669,7 @@ class BirthdayGameApp {
   advancePrologue() {
     const steps = [
       {
-        speaker: "Sahabat (Cowok)",
+        speaker: "Arya",
         text: "Hai sahabatku! Di hari yang istimewa ini, aku ada sebuah hadiah rahasia spesial yang sudah kusiapkan khusus buat kamu nih...",
         showLeft: false,
         showRight: true,
@@ -2677,7 +2677,7 @@ class BirthdayGameApp {
         action: () => {}
       },
       {
-        speaker: "Sahabat (Cowok)",
+        speaker: "Arya",
         text: "Eh tunggu sebentar... Apa itu suara langkah kaki mencurigakan dari balik pepohonan?!",
         showLeft: false,
         showRight: true,
@@ -2701,7 +2701,7 @@ class BirthdayGameApp {
         }
       },
       {
-        speaker: "Kamu (Hero Cewek)",
+        speaker: "Farah",
         text: "Loh, kenapa hadiah rahasiaku malah dicuri paksa?! Tenang, biar aku yang kejar dan rebut kembali hadiah itu!",
         showLeft: true,
         showRight: false,
@@ -3060,8 +3060,8 @@ class BirthdayGameApp {
     const lines = [
       "Shadow Lord: 'A-aku menyerah... Cahaya persahabatan kalian... terlalu murni untuk direbut...'",
       "Shadow Lord: 'Ambillah kembali... Hadiah berharga ini memang sejak awal milik kalian berdua...'",
-      "Sahabat: 'Kado rahasiamu berhasil kita selamatkan! Hebat sekali perjuanganmu!'",
-      "Kamu: 'Ayo cepat kita bawa kado ini dan buka bersama-sama!'"
+      "Arya: 'Kado rahasiamu berhasil kita selamatkan! Hebat sekali perjuanganmu!'",
+      "Farah: 'Ayo cepat kita bawa kado ini dan buka bersama-sama!'"
     ];
 
     let lineIdx = 0;
